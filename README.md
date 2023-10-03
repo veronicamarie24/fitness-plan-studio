@@ -12,4 +12,8 @@ REACT_APP_PELOTON_USER=yourusernamehere
 REACT_APP_PELOTON_PASSWORD=yourpasswordhere
 ```
 
-To run: `npm start`
+Install packages
+`npm install`
+
+Run the app
+`npm start`
