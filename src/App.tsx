@@ -1,31 +1,26 @@
-import { CircularProgress } from "@mui/material";
-import { useEffect, useState } from "react";
-import { login } from "./api-login";
-import { Class, getAllClasses } from "./get-all-classes";
+import { Typography } from "@mui/material";
+import { useEffect } from "react";
+import { login } from "./api/login";
+import { PlanPreferences } from "./components/plan-preferences";
 
 function App() {
-  const [classes, setClasses] = useState<Class[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  // const [classes, setClasses] = useState<Class[]>([]);
+  // const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     login();
-    getAllClasses().then((classes) => {
-      setClasses(classes);
-      setIsLoading(false);
-    });
+    // getAllClasses().then((classes) => {
+    //   setClasses(classes);
+    //   setIsLoading(false);
+    // });
   }, []);
 
   return (
     <div>
-      <ul>
-        {isLoading ? (
-          <CircularProgress />
-        ) : classes ? (
-          classes.map((item) => <li key={item.id}>{item.title}</li>)
-        ) : (
-          "No classes were found."
-        )}
-      </ul>
+      <Typography variant="h2" gutterBottom>
+        Fitness Plan Studio
+      </Typography>
+      <PlanPreferences />
     </div>
   );
 }
