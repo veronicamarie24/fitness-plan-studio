@@ -2,7 +2,7 @@ import fetch from "node-fetch";
 
 type FilterValue = {
   name: string;
-  displayName: string;
+  display_name: string;
   value: string;
   listOrder: number;
 };
@@ -35,4 +35,30 @@ export async function getFilters(): Promise<Filter[]> {
   const { filters } = result;
 
   return filters;
+}
+
+export type Category = {
+  name: string;
+  slug: string;
+  list_order: number;
+};
+
+export async function getCategories(): Promise<Category[]> {
+  const response = await fetch(`api/browse_categories?library_type=on_demand`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "User-Agent": "local-app",
+      "Peloton-Platform": "web",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      `Failed to fetch data from API: ${response.status} - ${response.statusText}`
+    );
+  }
+
+  const result = await response.json();
+  return result.browse_categories;
 }
