@@ -1,4 +1,4 @@
-import { Box, CircularProgress } from "@mui/material";
+import { Box, Button, CircularProgress } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import {
   Category,
@@ -66,7 +66,10 @@ export function PlanPreferences() {
       }));
     };
 
-  const handleSubmit = () => {};
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    console.log("submit", formState);
+  };
 
   const isLoading = isFiltersLoading || isCategoriesLoading;
 
@@ -114,6 +117,10 @@ export function PlanPreferences() {
           formState={formState}
         />
       )}
+
+      <Button variant="outlined" type="submit">
+        Submit
+      </Button>
     </Box>
   );
 }

@@ -25,8 +25,6 @@ type FilterCheckboxProps = {
 export function FilterCheckboxGroup(props: FilterCheckboxProps) {
   const { label, filter, values, handleCheckboxChange, formState } = props;
 
-  console.log(formState);
-
   return (
     <FormControl component="fieldset" variant="standard">
       <FormLabel component="legend">{label}</FormLabel>
