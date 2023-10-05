@@ -25,21 +25,23 @@ type FilterCheckboxProps = {
 export function FilterCheckboxGroup(props: FilterCheckboxProps) {
   const { label, filter, values, handleCheckboxChange, formState } = props;
 
+  console.log(formState);
+
   return (
     <FormControl component="fieldset" variant="standard">
       <FormLabel component="legend">{label}</FormLabel>
       <FormGroup>
         {values.map((value) => (
           <FormControlLabel
-            key={value.name}
+            key={getName(value)}
             control={
               <Checkbox
-                checked={formState.classType[value.name] || false}
-                onChange={handleCheckboxChange(filter, value.name)}
-                name={value.name}
+                checked={formState[filter][getName(value)] || false}
+                onChange={handleCheckboxChange(filter, getName(value))}
+                name={getName(value)}
               />
             }
-            label={isCategory(value) ? value.name : value.display_name}
+            label={getName(value)}
           />
         ))}
       </FormGroup>
@@ -49,4 +51,8 @@ export function FilterCheckboxGroup(props: FilterCheckboxProps) {
 
 function isCategory(value: FilterValue | Category): value is Category {
   return "slug" in value;
+}
+
+function getName(value: FilterValue | Category): string {
+  return isCategory(value) ? value.name : value.display_name;
 }
