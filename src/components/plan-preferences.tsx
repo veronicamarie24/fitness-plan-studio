@@ -61,10 +61,18 @@ export function PlanPreferences() {
         variant="standard"
         sx={{ flexDirection: "row" }}
       >
-        {categories && <FilterCheckbox values={categories} />}
-        {duration && <FilterCheckbox values={duration.values} />}
-        {muscleGroup && <FilterCheckbox values={muscleGroup.values} />}
-        {instructor && <FilterCheckbox values={instructor.values} />}
+        {categories && (
+          <FilterCheckbox label="Class Type" values={categories} />
+        )}
+        {duration && (
+          <FilterCheckbox label="Duration" values={duration.values} />
+        )}
+        {muscleGroup && (
+          <FilterCheckbox label="Muscle Group" values={muscleGroup.values} />
+        )}
+        {instructor && (
+          <FilterCheckbox label="Instructor" values={instructor.values} />
+        )}
       </FormControl>
     </Box>
   );

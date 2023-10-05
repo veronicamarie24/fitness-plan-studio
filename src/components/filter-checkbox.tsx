@@ -9,16 +9,17 @@ import { useCallback } from "react";
 import { Category, FilterValue } from "../api/get-filters";
 
 type FilterCheckboxProps = {
+  label: string;
   values: FilterValue[] | Category[];
 };
 
 export function FilterCheckbox(props: FilterCheckboxProps) {
-  const { values } = props;
+  const { label, values } = props;
   const handleChangeDuration = useCallback(() => {}, []);
 
   return (
     <Box>
-      <FormLabel component="legend">Class Type</FormLabel>
+      <FormLabel component="legend">{label}</FormLabel>
       <FormGroup>
         {values.map((value) => (
           <FormControlLabel
