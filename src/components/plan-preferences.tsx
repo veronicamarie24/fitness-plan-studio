@@ -1,30 +1,33 @@
-import {
-  Box,
-  Checkbox,
-  CircularProgress,
-  FormControl,
-  FormControlLabel,
-  FormGroup,
-  FormLabel,
-} from "@mui/material";
-import { useCallback, useEffect, useState } from "react";
+import { Box, CircularProgress } from "@mui/material";
+import { useEffect, useMemo, useState } from "react";
 import {
   Category,
   Filter,
   getCategories,
   getFilters,
 } from "../api/get-filters";
-import { FilterCheckbox } from "./filter-checkbox";
+import { FilterCheckboxGroup } from "./filter-checkbox-group";
+
+export type CheckboxCategories =
+  | "classType"
+  | "duration"
+  | "muscleGroup"
+  | "instructor";
+
+export type PlanPreferencesFormState = {
+  [K in CheckboxCategories]: Record<string, boolean>;
+};
 
 export function PlanPreferences() {
   const [filters, setFilters] = useState<Filter[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isFiltersLoading, setIsFiltersLoading] = useState(true);
   const [isCategoriesLoading, setIsCategoriesLoading] = useState(true);
-  const [formState, setFormState] = useState({
-    gilad: true,
-    jason: false,
-    antoine: false,
+  const [formState, setFormState] = useState<PlanPreferencesFormState>({
+    classType: {},
+    duration: {},
+    muscleGroup: {},
+    instructor: {},
   });
 
   useEffect(() => {
@@ -39,41 +42,78 @@ export function PlanPreferences() {
     });
   }, []);
 
-  const handleChangeDuration = useCallback(() => {}, []);
+  const durations = useMemo(
+    () => filters.find((element) => element.name === "duration"),
+    [filters]
+  );
 
-  const duration = filters.find((element) => element.name === "duration");
-  const instructor = filters.find(
-    (element) => element.name === "instructor_id"
+  const instructors = useMemo(
+    () => filters.find((element) => element.name === "instructor_id"),
+    [filters]
   );
-  const muscleGroup = filters.find(
-    (element) => element.name === "muscle_group"
+
+  const muscleGroups = useMemo(
+    () => filters.find((element) => element.name === "muscle_group"),
+    [filters]
   );
-  const classType = filters.find((element) => element.name === "ride_type_id");
+
+  const handleCheckboxChange =
+    (category: CheckboxCategories, value: string) =>
+    (event: React.ChangeEvent<HTMLInputElement>): void => {
+      setFormState((prevState) => ({
+        ...prevState,
+        [category]: { ...prevState[category], [value]: event.target.checked },
+      }));
+    };
+
+  const handleSubmit = () => {};
 
   const isLoading = isFiltersLoading || isCategoriesLoading;
 
   return isLoading ? (
     <CircularProgress />
   ) : (
-    <Box>
-      <FormControl
-        component="fieldset"
-        variant="standard"
-        sx={{ flexDirection: "row" }}
-      >
-        {categories && (
-          <FilterCheckbox label="Class Type" values={categories} />
-        )}
-        {duration && (
-          <FilterCheckbox label="Duration" values={duration.values} />
-        )}
-        {muscleGroup && (
-          <FilterCheckbox label="Muscle Group" values={muscleGroup.values} />
-        )}
-        {instructor && (
-          <FilterCheckbox label="Instructor" values={instructor.values} />
-        )}
-      </FormControl>
+    <Box
+      component="form"
+      onSubmit={handleSubmit}
+      sx={{ height: "500px", flexDirection: "row", flexWrap: "wrap" }}
+    >
+      {categories && (
+        <FilterCheckboxGroup
+          label="Class Type"
+          filter="classType"
+          values={categories}
+          handleCheckboxChange={handleCheckboxChange}
+          formState={formState}
+        />
+      )}
+      {durations && (
+        <FilterCheckboxGroup
+          label="Duration"
+          filter="duration"
+          values={durations.values}
+          handleCheckboxChange={handleCheckboxChange}
+          formState={formState}
+        />
+      )}
+      {muscleGroups && (
+        <FilterCheckboxGroup
+          label="Muscle Group"
+          filter="muscleGroup"
+          values={muscleGroups.values}
+          handleCheckboxChange={handleCheckboxChange}
+          formState={formState}
+        />
+      )}
+      {instructors && (
+        <FilterCheckboxGroup
+          label="Instructor"
+          filter="instructor"
+          values={instructors.values}
+          handleCheckboxChange={handleCheckboxChange}
+          formState={formState}
+        />
+      )}
     </Box>
   );
 }
