@@ -14,6 +14,7 @@ import {
   getCategories,
   getFilters,
 } from "../api/get-filters";
+import { FilterCheckbox } from "./filter-checkbox";
 
 export function PlanPreferences() {
   const [filters, setFilters] = useState<Filter[]>([]);
@@ -55,74 +56,15 @@ export function PlanPreferences() {
     <CircularProgress />
   ) : (
     <Box>
-      <FormControl component="fieldset" variant="standard">
-        <FormLabel component="legend">Class Type</FormLabel>
-        <FormGroup>
-          {categories &&
-            categories.map((item) => (
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={false}
-                    onChange={handleChangeDuration}
-                    name={item.slug}
-                  />
-                }
-                label={item.name}
-              />
-            ))}
-        </FormGroup>
-
-        <FormLabel component="legend">Duration</FormLabel>
-        <FormGroup>
-          {duration &&
-            duration.values.map((item) => (
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={false}
-                    onChange={handleChangeDuration}
-                    name={item.value}
-                  />
-                }
-                label={item.display_name}
-              />
-            ))}
-        </FormGroup>
-
-        <FormLabel component="legend">Muscle Group</FormLabel>
-        <FormGroup>
-          {muscleGroup &&
-            muscleGroup.values.map((item) => (
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={false}
-                    onChange={handleChangeDuration}
-                    name={item.value}
-                  />
-                }
-                label={item.display_name}
-              />
-            ))}
-        </FormGroup>
-
-        <FormLabel component="legend">Instructor</FormLabel>
-        <FormGroup>
-          {instructor &&
-            instructor.values.map((item) => (
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={false}
-                    onChange={handleChangeDuration}
-                    name={item.value}
-                  />
-                }
-                label={item.display_name}
-              />
-            ))}
-        </FormGroup>
+      <FormControl
+        component="fieldset"
+        variant="standard"
+        sx={{ flexDirection: "row" }}
+      >
+        {categories && <FilterCheckbox values={categories} />}
+        {duration && <FilterCheckbox values={duration.values} />}
+        {muscleGroup && <FilterCheckbox values={muscleGroup.values} />}
+        {instructor && <FilterCheckbox values={instructor.values} />}
       </FormControl>
     </Box>
   );

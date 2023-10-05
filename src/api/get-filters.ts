@@ -1,6 +1,6 @@
 import fetch from "node-fetch";
 
-type FilterValue = {
+export type FilterValue = {
   name: string;
   display_name: string;
   value: string;
