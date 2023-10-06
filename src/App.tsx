@@ -1,7 +1,7 @@
 import { Button, Stack, Typography } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import { login as apiLogin } from "./api/login";
-import { PlanPreferences } from "./components/plan-preferences";
+import { PlanPreferencesForm } from "./components/plan-preferences-form";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -32,7 +32,7 @@ function App() {
       <Typography variant="h2" gutterBottom>
         Fitness Plan Studio
       </Typography>
-      {isLoggedIn && <PlanPreferences />}
+      {isLoggedIn && <PlanPreferencesForm />}
 
       {loginError && (
         <Stack direction="row">

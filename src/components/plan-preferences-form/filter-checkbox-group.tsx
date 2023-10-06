@@ -3,13 +3,11 @@ import {
   FormControl,
   FormControlLabel,
   FormGroup,
+  FormGroupProps,
   FormLabel,
 } from "@mui/material";
-import { Category, FilterValue } from "../api/get-filters";
-import {
-  CheckboxCategories,
-  PlanPreferencesFormState,
-} from "./plan-preferences";
+import { Category, FilterValue } from "../../api/get-filters";
+import { CheckboxCategories } from "../plan-preferences-form";
 
 type FilterCheckboxProps = {
   label: string;
@@ -19,11 +17,12 @@ type FilterCheckboxProps = {
     category: CheckboxCategories,
     value: string
   ) => (event: React.ChangeEvent<HTMLInputElement>) => void;
-  formState: PlanPreferencesFormState;
+  filterFormState: Record<string, boolean>;
 };
 
 export function FilterCheckboxGroup(props: FilterCheckboxProps) {
-  const { label, filter, values, handleCheckboxChange, formState } = props;
+  const { label, filter, values, handleCheckboxChange, filterFormState } =
+    props;
 
   return (
     <FormControl component="fieldset" variant="standard">
@@ -34,7 +33,7 @@ export function FilterCheckboxGroup(props: FilterCheckboxProps) {
             key={getName(value)}
             control={
               <Checkbox
-                checked={formState[filter][getName(value)] || false}
+                checked={filterFormState[getName(value)] || false}
                 onChange={handleCheckboxChange(filter, getName(value))}
                 name={getName(value)}
               />
