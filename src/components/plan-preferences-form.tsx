@@ -5,10 +5,11 @@ import {
   Filter,
   getCategories,
   getFilters,
-} from "../api/get-filters";
+} from "../api/get-filters-categories";
 import { FilterCheckboxGroup } from "./plan-preferences-form/filter-checkbox-group";
 import { PlanLengthInput } from "./plan-preferences-form/plan-length-input";
 import { NumClassesInput } from "./plan-preferences-form/num-classes-input";
+import { generatePlan } from "../utils/plan-generator";
 
 export type CheckboxCategories =
   | "classType"
@@ -19,7 +20,6 @@ export type CheckboxCategories =
   | "planLength";
 
 export type PlanPreferencesFormState = {
-  // classType: Record<string, boolean>;
   classType: Record<string, boolean>;
   duration: Record<string, boolean>;
   muscleGroup: Record<string, boolean>;
@@ -100,6 +100,7 @@ export function PlanPreferencesForm() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     console.log("submit", formState);
+    generatePlan(formState);
   };
 
   const isLoading = isFiltersLoading || isCategoriesLoading;

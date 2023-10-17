@@ -41,6 +41,13 @@ export type Category = {
   name: string;
   slug: string;
   list_order: number;
+  id: string;
+  flags: string[];
+  has_limited_rides: boolean;
+  icon_url: string;
+  large_portal_image_url: string;
+  portal_image_url: string;
+  small_portal_image_url: string;
 };
 
 export async function getCategories(): Promise<Category[]> {
