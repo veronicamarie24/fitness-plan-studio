@@ -89,13 +89,6 @@ function constructQueryParams(
           formData[formKey as keyof PlanPreferencesFormState]
         )) {
           if (value) {
-            // if (formKey === "duration") {
-            //   const minutes = parseInt(key.split(" ")[0], 10);
-            //   const seconds = minutes * 60;
-            //   values.push(seconds.toString());
-            // } else {
-            //   values.push(key.toLowerCase().replace(" ", ""));
-            // }
             values.push(key.toLowerCase().replace(" ", ""));
           }
         }
@@ -106,6 +99,5 @@ function constructQueryParams(
     }
   }
 
-  console.log(queryParameters);
   return queryParameters;
 }
