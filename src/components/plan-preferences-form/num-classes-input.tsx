@@ -1,5 +1,5 @@
 import { FormControl, TextField } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type NumClassesInputProps = {
   onNumClassesChange: (value: string) => void;
@@ -10,6 +10,10 @@ export function NumClassesInput(props: NumClassesInputProps) {
   const { onNumClassesChange, error } = props;
 
   const [numClassesError, setNumClassesError] = useState(error);
+
+  useEffect(() => {
+    setNumClassesError(error);
+  }, [error]);
 
   const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = event.target.value;

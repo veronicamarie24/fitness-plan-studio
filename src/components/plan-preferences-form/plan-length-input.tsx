@@ -5,7 +5,7 @@ import {
   SelectChangeEvent,
   TextField,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type PlanLengthInputProps = {
   onPlanLengthChange: (value: string, unit: string) => void;
@@ -18,6 +18,10 @@ export function PlanLengthInput(props: PlanLengthInputProps) {
   const [value, setValue] = useState("");
   const [unit, setUnit] = useState("days");
   const [planLengthError, setPlanLengthError] = useState(error);
+
+  useEffect(() => {
+    setPlanLengthError(error);
+  }, [error]);
 
   const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = event.target.value;
@@ -36,8 +40,6 @@ export function PlanLengthInput(props: PlanLengthInputProps) {
     setUnit(event.target.value);
     onPlanLengthChange(value, event.target.value);
   };
-
-  console.log(planLengthError);
 
   return (
     <FormControl sx={{ maxWidth: "200px", flexDirection: "row" }}>

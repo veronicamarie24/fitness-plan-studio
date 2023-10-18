@@ -137,8 +137,6 @@ export function PlanPreferencesForm() {
       planLength: "",
     };
 
-    console.log("validating", formState);
-
     if (!formState.numClassesPerWeek) {
       isValid = false;
       errors.numClassesPerWeek =
@@ -151,7 +149,6 @@ export function PlanPreferencesForm() {
     }
 
     setFormErrors(errors);
-    console.log(isValid);
     return isValid;
   };
 
