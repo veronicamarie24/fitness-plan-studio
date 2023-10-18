@@ -1,15 +1,12 @@
 import { Box, Button, CircularProgress, Stack } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
-import {
-  Category,
-  Filter,
-  getCategories,
-  getFilters,
-} from "../api/get-filters-categories";
+import { Filter, FilterValue, getFilters } from "../api/get-filters";
 import { FilterCheckboxGroup } from "./plan-preferences-form/filter-checkbox-group";
 import { PlanLengthInput } from "./plan-preferences-form/plan-length-input";
 import { NumClassesInput } from "./plan-preferences-form/num-classes-input";
 import { generatePlan } from "../utils/plan-generator";
+import { CategoryCheckboxGroup } from "./plan-preferences-form/category-checkbox-group";
+import { Category, getCategories } from "../api/get-categories";
 
 export type CheckboxCategories =
   | "classType"
@@ -20,10 +17,10 @@ export type CheckboxCategories =
   | "planLength";
 
 export type PlanPreferencesFormState = {
-  classType: Record<string, boolean>;
-  duration: Record<string, boolean>;
-  muscleGroup: Record<string, boolean>;
-  instructor: Record<string, boolean>;
+  classType: Record<string, Category>;
+  duration: Record<string, FilterValue>;
+  muscleGroup: Record<string, FilterValue>;
+  instructor: Record<string, FilterValue>;
   numClassesPerWeek: string;
   planLength: string;
 };
@@ -33,11 +30,17 @@ export function PlanPreferencesForm() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [isFiltersLoading, setIsFiltersLoading] = useState(true);
   const [isCategoriesLoading, setIsCategoriesLoading] = useState(true);
+
   const [formState, setFormState] = useState<PlanPreferencesFormState>({
     classType: {},
     duration: {},
     muscleGroup: {},
     instructor: {},
+    numClassesPerWeek: "",
+    planLength: "",
+  });
+
+  const [formErrors, setFormErrors] = useState({
     numClassesPerWeek: "",
     planLength: "",
   });
@@ -69,16 +72,46 @@ export function PlanPreferencesForm() {
     [filters]
   );
 
-  const handleCheckboxChange =
-    (category: CheckboxCategories, value: string) =>
+  const handleFilterCheckboxChange =
+    (checkboxCategory: CheckboxCategories, filterValue: FilterValue) =>
     (event: React.ChangeEvent<HTMLInputElement>): void => {
-      setFormState((prevState) => ({
-        ...prevState,
-        [category]: {
-          ...(prevState[category] as Record<string, boolean>),
-          [value]: event.target.checked,
-        },
-      }));
+      const isChecked = event.target.checked;
+
+      setFormState((prevState) => {
+        const newCategoryState = {
+          ...(prevState[checkboxCategory] as Record<string, FilterValue>),
+        };
+        if (isChecked) {
+          newCategoryState[filterValue.value] = filterValue;
+        } else {
+          delete newCategoryState[filterValue.value];
+        }
+        return {
+          ...prevState,
+          [checkboxCategory]: newCategoryState,
+        };
+      });
+    };
+
+  const handleCategoryheckboxChange =
+    (checkboxCategory: CheckboxCategories, category: Category) =>
+    (event: React.ChangeEvent<HTMLInputElement>): void => {
+      const isChecked = event.target.checked;
+
+      setFormState((prevState) => {
+        const newCategoryState = {
+          ...(prevState[checkboxCategory] as Record<string, Category>),
+        };
+        if (isChecked) {
+          newCategoryState[category.id] = category;
+        } else {
+          delete newCategoryState[category.id];
+        }
+        return {
+          ...prevState,
+          [checkboxCategory]: newCategoryState,
+        };
+      });
     };
 
   const handleNumClassesChange = (value: string): void => {
@@ -97,10 +130,37 @@ export function PlanPreferencesForm() {
     }));
   };
 
+  const validateForm = () => {
+    let isValid = true;
+    const errors = {
+      numClassesPerWeek: "",
+      planLength: "",
+    };
+
+    console.log("validating", formState);
+
+    if (!formState.numClassesPerWeek) {
+      isValid = false;
+      errors.numClassesPerWeek =
+        "Please provide the desired number of classes per week.";
+    }
+
+    if (!formState.planLength) {
+      isValid = false;
+      errors.planLength = "Please provide the desired length of your plan.";
+    }
+
+    setFormErrors(errors);
+    console.log(isValid);
+    return isValid;
+  };
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     console.log("submit", formState);
-    generatePlan(formState);
+    if (validateForm()) {
+      generatePlan(formState);
+    }
   };
 
   const isLoading = isFiltersLoading || isCategoriesLoading;
@@ -120,22 +180,21 @@ export function PlanPreferencesForm() {
         sx={{ "& .MuiFormGroup-root": { maxHeight: "300px" } }}
       >
         {categories && (
-          <FilterCheckboxGroup
+          <CategoryCheckboxGroup
             label="Class Type"
-            filter="classType"
+            checkboxCategory="classType"
             values={categories}
-            handleCheckboxChange={handleCheckboxChange}
+            handleCheckboxChange={handleCategoryheckboxChange}
             filterFormState={formState["classType"]}
-            // formGroupSx={{ maxHeight: "400px" }}
           />
         )}
 
         {durations && (
           <FilterCheckboxGroup
             label="Duration"
-            filter="duration"
+            checkboxCategory="duration"
             values={durations.values}
-            handleCheckboxChange={handleCheckboxChange}
+            handleCheckboxChange={handleFilterCheckboxChange}
             filterFormState={formState["duration"]}
           />
         )}
@@ -143,9 +202,9 @@ export function PlanPreferencesForm() {
         {muscleGroups && (
           <FilterCheckboxGroup
             label="Muscle Group"
-            filter="muscleGroup"
+            checkboxCategory="muscleGroup"
             values={muscleGroups.values}
-            handleCheckboxChange={handleCheckboxChange}
+            handleCheckboxChange={handleFilterCheckboxChange}
             filterFormState={formState["muscleGroup"]}
           />
         )}
@@ -163,9 +222,9 @@ export function PlanPreferencesForm() {
         >
           <FilterCheckboxGroup
             label="Instructor"
-            filter="instructor"
+            checkboxCategory="instructor"
             values={instructors.values}
-            handleCheckboxChange={handleCheckboxChange}
+            handleCheckboxChange={handleFilterCheckboxChange}
             filterFormState={formState["instructor"]}
           />
         </Box>
@@ -173,9 +232,15 @@ export function PlanPreferencesForm() {
 
       <Stack spacing={2}>
         <Stack direction="row" spacing={4}>
-          <NumClassesInput onNumClassesChange={handleNumClassesChange} />
+          <NumClassesInput
+            onNumClassesChange={handleNumClassesChange}
+            error={formErrors.numClassesPerWeek}
+          />
 
-          <PlanLengthInput onPlanLengthChange={handlePlanLengthChange} />
+          <PlanLengthInput
+            onPlanLengthChange={handlePlanLengthChange}
+            error={formErrors.planLength}
+          />
         </Stack>
 
         <Button variant="outlined" type="submit" sx={{ maxWidth: "200px" }}>

@@ -5,21 +5,21 @@ import {
   FormGroup,
   FormLabel,
 } from "@mui/material";
-import { FilterValue } from "../../api/get-filters";
+import { Category } from "../../api/get-categories";
 import { CheckboxCategories } from "../plan-preferences-form";
 
 type FilterCheckboxProps = {
   label: string;
   checkboxCategory: CheckboxCategories;
-  values: FilterValue[];
+  values: Category[];
   handleCheckboxChange: (
     checkboxCategory: CheckboxCategories,
-    value: FilterValue
+    value: Category
   ) => (event: React.ChangeEvent<HTMLInputElement>) => void;
-  filterFormState: Record<string, FilterValue>;
+  filterFormState: Record<string, Category>;
 };
 
-export function FilterCheckboxGroup(props: FilterCheckboxProps) {
+export function CategoryCheckboxGroup(props: FilterCheckboxProps) {
   const {
     label,
     checkboxCategory,
@@ -32,17 +32,17 @@ export function FilterCheckboxGroup(props: FilterCheckboxProps) {
     <FormControl component="fieldset" variant="standard">
       <FormLabel component="legend">{label}</FormLabel>
       <FormGroup>
-        {values.map((filterValue) => (
+        {values.map((value) => (
           <FormControlLabel
-            key={filterValue.value}
+            key={value.id}
             control={
               <Checkbox
-                checked={Boolean(filterFormState[filterValue.value]) || false}
-                onChange={handleCheckboxChange(checkboxCategory, filterValue)}
-                name={filterValue.value}
+                checked={Boolean(filterFormState[value.id]) || false}
+                onChange={handleCheckboxChange(checkboxCategory, value)}
+                name={value.id}
               />
             }
-            label={filterValue.display_name}
+            label={value.name}
           />
         ))}
       </FormGroup>

@@ -3,12 +3,13 @@ import { useState } from "react";
 
 type NumClassesInputProps = {
   onNumClassesChange: (value: string) => void;
+  error: string;
 };
 
 export function NumClassesInput(props: NumClassesInputProps) {
-  const { onNumClassesChange } = props;
+  const { onNumClassesChange, error } = props;
 
-  const [numClassesError, setNumClassesError] = useState("");
+  const [numClassesError, setNumClassesError] = useState(error);
 
   const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = event.target.value;

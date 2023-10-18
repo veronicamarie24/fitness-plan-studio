@@ -9,14 +9,15 @@ import { useState } from "react";
 
 type PlanLengthInputProps = {
   onPlanLengthChange: (value: string, unit: string) => void;
+  error: string;
 };
 
 export function PlanLengthInput(props: PlanLengthInputProps) {
-  const { onPlanLengthChange } = props;
+  const { onPlanLengthChange, error } = props;
 
   const [value, setValue] = useState("");
   const [unit, setUnit] = useState("days");
-  const [planLengthError, setPlanLengthError] = useState("");
+  const [planLengthError, setPlanLengthError] = useState(error);
 
   const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = event.target.value;
@@ -35,6 +36,8 @@ export function PlanLengthInput(props: PlanLengthInputProps) {
     setUnit(event.target.value);
     onPlanLengthChange(value, event.target.value);
   };
+
+  console.log(planLengthError);
 
   return (
     <FormControl sx={{ maxWidth: "200px", flexDirection: "row" }}>
