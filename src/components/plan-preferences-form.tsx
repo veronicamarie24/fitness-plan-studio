@@ -4,7 +4,6 @@ import { Filter, FilterValue, getFilters } from "../api/get-filters";
 import { FilterCheckboxGroup } from "./plan-preferences-form/filter-checkbox-group";
 import { PlanLengthInput } from "./plan-preferences-form/plan-length-input";
 import { NumClassesInput } from "./plan-preferences-form/num-classes-input";
-import { generatePlan } from "../utils/plan-generator";
 import { CategoryCheckboxGroup } from "./plan-preferences-form/category-checkbox-group";
 import { Category, getCategories } from "../api/get-categories";
 
@@ -127,12 +126,10 @@ export function PlanPreferencesForm(props: PlanPreferencesFormProps) {
     }));
   };
 
-  const handlePlanLengthChange = (value: string, unit: string): void => {
-    // Combine the value and unit into a single string and update the planLength property
-    const combinedPlanLength = `${value} ${unit}`;
+  const handlePlanLengthChange = (value: string): void => {
     setFormState((prevState) => ({
       ...prevState,
-      planLength: combinedPlanLength,
+      planLength: value,
     }));
   };
 

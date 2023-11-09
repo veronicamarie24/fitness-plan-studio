@@ -1,22 +1,14 @@
-import {
-  FormControl,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  TextField,
-} from "@mui/material";
+import { FormControl, InputAdornment, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 
 type PlanLengthInputProps = {
-  onPlanLengthChange: (value: string, unit: string) => void;
+  onPlanLengthChange: (value: string) => void;
   error: string;
 };
 
 export function PlanLengthInput(props: PlanLengthInputProps) {
   const { onPlanLengthChange, error } = props;
 
-  const [value, setValue] = useState("");
-  const [unit, setUnit] = useState("days");
   const [planLengthError, setPlanLengthError] = useState(error);
 
   useEffect(() => {
@@ -25,20 +17,14 @@ export function PlanLengthInput(props: PlanLengthInputProps) {
 
   const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = event.target.value;
-    setValue(inputValue);
     // Simple validation for planLength
     const numberValue = +inputValue;
     if (!Number.isInteger(numberValue) || numberValue < 1 || numberValue > 12) {
       setPlanLengthError("You must enter a whole number between 1 and 12.");
     } else {
       setPlanLengthError("");
-      onPlanLengthChange(inputValue, unit);
+      onPlanLengthChange(inputValue);
     }
-  };
-
-  const handleUnitChange = (event: SelectChangeEvent<string>) => {
-    setUnit(event.target.value);
-    onPlanLengthChange(value, event.target.value);
   };
 
   return (
@@ -48,14 +34,12 @@ export function PlanLengthInput(props: PlanLengthInputProps) {
         variant="standard"
         onChange={handleValueChange}
         helperText={planLengthError}
+        InputProps={{
+          endAdornment: <InputAdornment position="start">weeks</InputAdornment>,
+        }}
         error={!!planLengthError}
         sx={{ mr: 1 }}
       />
-      <Select value={unit} onChange={handleUnitChange}>
-        <MenuItem value="days">Days</MenuItem>
-        <MenuItem value="weeks">Weeks</MenuItem>
-        <MenuItem value="months">Months</MenuItem>
-      </Select>
     </FormControl>
   );
 }

@@ -7,14 +7,7 @@ import { PlanPreferencesFormState } from "../components/plan-preferences-form";
 
 export type WorkoutPlan = {
   startDate: Date;
-  dailyWorkouts: Array<{
-    day: string;
-    workouts: Array<{
-      className: string;
-      instructor: string;
-      classLink: string;
-    }>;
-  }>;
+  dailyWorkouts: Class[];
 };
 
 export async function generatePlan(
@@ -31,12 +24,50 @@ export async function generatePlan(
       dailyWorkouts: [],
     };
 
+    const highIntensityClasses = getHighIntensityClasses(classes);
+    const lowIntensityClasses = getLowIntensityClasses(classes);
+
+    const numClasses =
+      Number(formData.numClassesPerWeek) * Number(formData.planLength);
+
+    for (let i = 0; i < numClasses; i++) {
+      if (i % 2 === 0 && highIntensityClasses.length > 0) {
+        workoutPlan.dailyWorkouts.push(highIntensityClasses.shift()!);
+      }
+
+      if (i % 2 === 1 && lowIntensityClasses.length > 0) {
+        workoutPlan.dailyWorkouts.push(lowIntensityClasses.shift()!);
+      }
+    }
+
+    console.log(workoutPlan);
+
     return workoutPlan;
   } catch (error) {
     // Handle errors
     console.error(error);
     throw error;
   }
+}
+
+function getHighIntensityClasses(classes: Class[]) {
+  let highIntensityClasses = classes.filter(
+    (c) => c.difficulty_rating_avg >= 6
+  );
+
+  // descending sort
+  return highIntensityClasses.sort(
+    (a, b) => b.difficulty_rating_avg - a.difficulty_rating_avg
+  );
+}
+
+function getLowIntensityClasses(classes: Class[]) {
+  let lowIntensityClasses = classes.filter((c) => c.difficulty_rating_avg <= 6);
+
+  // ascending sort
+  return lowIntensityClasses.sort(
+    (a, b) => a.difficulty_rating_avg - b.difficulty_rating_avg
+  );
 }
 
 async function getClassesFromUserInput(
