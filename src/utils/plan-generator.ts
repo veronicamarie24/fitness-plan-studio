@@ -5,7 +5,7 @@ import {
 } from "../api/get-all-classes";
 import { PlanPreferencesFormState } from "../components/plan-preferences-form";
 
-type WorkoutPlan = {
+export type WorkoutPlan = {
   startDate: Date;
   dailyWorkouts: Array<{
     day: string;
@@ -21,14 +21,11 @@ export async function generatePlan(
   formData: PlanPreferencesFormState
 ): Promise<WorkoutPlan> {
   try {
-    // Retrieve the array of classes using async/await
     const classes: Class[] = await getClassesFromUserInput(formData);
     console.log(classes);
 
-    // Start the plan today
     const startDate = new Date();
 
-    // Now that you have the 'classes' array, you can use it to construct the workout plan
     const workoutPlan: WorkoutPlan = {
       startDate: startDate,
       dailyWorkouts: [],

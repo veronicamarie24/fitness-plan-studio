@@ -25,7 +25,13 @@ export type PlanPreferencesFormState = {
   planLength: string;
 };
 
-export function PlanPreferencesForm() {
+interface PlanPreferencesFormProps {
+  handleSubmit: (formState: PlanPreferencesFormState) => void;
+}
+
+export function PlanPreferencesForm(props: PlanPreferencesFormProps) {
+  const { handleSubmit: handleSubmitProp } = props;
+
   const [filters, setFilters] = useState<Filter[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isFiltersLoading, setIsFiltersLoading] = useState(true);
@@ -117,7 +123,7 @@ export function PlanPreferencesForm() {
   const handleNumClassesChange = (value: string): void => {
     setFormState((prevState) => ({
       ...prevState,
-      planLength: value,
+      numClassesPerWeek: value,
     }));
   };
 
@@ -156,7 +162,7 @@ export function PlanPreferencesForm() {
     event.preventDefault();
     console.log("submit", formState);
     if (validateForm()) {
-      generatePlan(formState);
+      handleSubmitProp(formState);
     }
   };
 

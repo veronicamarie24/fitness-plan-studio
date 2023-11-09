@@ -1,11 +1,18 @@
 import { Button, Stack, Typography } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import { login as apiLogin } from "./api/login";
-import { PlanPreferencesForm } from "./components/plan-preferences-form";
+import {
+  PlanPreferencesForm,
+  PlanPreferencesFormState,
+} from "./components/plan-preferences-form";
+import { CurrentPlan } from "./components/current-plan";
+import { WorkoutPlan, generatePlan } from "./utils/plan-generator";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loginError, setLoginError] = useState("");
+
+  const [workoutPlan, setWorkoutPlan] = useState<WorkoutPlan | null>(null);
 
   const login = useCallback(async () => {
     try {
@@ -27,12 +34,21 @@ function App() {
     login();
   }, [login]);
 
+  const handleSubmit = async (formState: PlanPreferencesFormState) => {
+    setWorkoutPlan(await generatePlan(formState));
+  };
+
   return (
     <div>
       <Typography variant="h2" gutterBottom>
         Fitness Plan Studio
       </Typography>
-      {isLoggedIn && <PlanPreferencesForm />}
+      {isLoggedIn && (
+        <Stack>
+          <PlanPreferencesForm handleSubmit={handleSubmit} />
+          {workoutPlan && <CurrentPlan workoutPlan={workoutPlan} />}
+        </Stack>
+      )}
 
       {loginError && (
         <Stack direction="row">

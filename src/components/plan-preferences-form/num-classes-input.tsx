@@ -12,7 +12,9 @@ export function NumClassesInput(props: NumClassesInputProps) {
   const [numClassesError, setNumClassesError] = useState(error);
 
   useEffect(() => {
-    setNumClassesError(error);
+    if (error) {
+      setNumClassesError(error);
+    }
   }, [error]);
 
   const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
